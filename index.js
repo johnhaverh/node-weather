@@ -1,13 +1,16 @@
+require('dotenv').config();
 require('colors');
 
 const { inquirerMenu, 
         pausa,
         leerInput,
-        // listadoTareasBorrar,
+        listarLugares,
         // confirmar,
         // mostrarListadoChecklist
 } = require('./helpers/inquirer');
-// const Tareas = require('./models/tareas');
+
+const Busquedas = require('./models/busquedas');
+
 // const { guardarDB,
 //         leerDB
 // } = require('./helpers/guardarArchivo');
@@ -16,8 +19,7 @@ const { inquirerMenu,
 const main = async () => {
 
     let opt='';
-    // const tareas = new Tareas();
-    // const tareasDB = leerDB();
+    const busquedas = new Busquedas();
 
     // if (tareasDB){
     //     tareas.cargarTareasFromArray(tareasDB);
@@ -27,17 +29,28 @@ const main = async () => {
          opt = await inquirerMenu(); //impresión del menu
     
         switch (opt) {
-            case '1':
-                const desc = await leerInput('Ciudad:'); 
-                // tareas.crearTareas(desc);
+            case 1:
+                const criterio = await leerInput('Ciudad:'); 
+                const lugares = await busquedas.Ciudad(criterio);
+                const id = await listarLugares(lugares);
+                const lugarSel= lugares.find( l => l.id === id);
+
+
+                console.log('\nInformación de la ciudad\n'.green);
+                console.log('Ciudad       : ', lugarSel.nombre);
+                console.log('Latitud      : ', lugarSel.lat);
+                console.log('Longitud     : ', lugarSel.lng);
+                console.log('Tenmperatura : ',);
+                console.log('Máxima       : ',);
+                console.log('Mínima       : ',);
                 break;           
-            case '2':
-                // tareas.listadoCompleto();
+            case 2:
+                busquedas.historial();
                 break;           
         }
     //     guardarDB(tareas.listadoArr);
-        await  pausa();
-    } while (opt != '0');
+        if (opt !== 0) await  pausa();
+    } while (opt != 0);
 
 }
 
