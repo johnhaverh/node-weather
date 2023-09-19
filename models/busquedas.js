@@ -1,11 +1,29 @@
 const axios = require('axios');
 
+const { guardarDB,
+        leerDB
+} = require('../helpers/guardarArchivo');
 
 
 class Busquedas {
     historial = [];
+
     constructor (){
+        const historialDB = leerDB();
+        console.log(historialDB);
+        
+        if (historialDB){
+            this.historial = historialDB.historial;
+        }
     };
+
+    get historialCapitalizado(){
+        return this.historial.map(lugar => {
+            let palabras = lugar.split(' ');
+            palabras = palabras.map(p => p[0].toUpperCase() + p.substring(1));
+            return palabras.join(' ');
+        })
+    }
     
     get paramsMapbox(){
         return {
@@ -62,7 +80,14 @@ class Busquedas {
             console.log(error);
         }
     }
-}
 
+    agregarHistorial(lugar=''){
+        if (!this.historial.includes(lugar.toLocaleLowerCase())){
+            this.historial = this.historial.splice(0,5);
+            this.historial.unshift(lugar.toLocaleLowerCase())
+        }
+        guardarDB(this.historial);
+    }
+}
 
 module.exports = Busquedas

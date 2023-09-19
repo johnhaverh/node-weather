@@ -5,25 +5,14 @@ const { inquirerMenu,
         pausa,
         leerInput,
         listarLugares,
-        // confirmar,
-        // mostrarListadoChecklist
 } = require('./helpers/inquirer');
 
 const Busquedas = require('./models/busquedas');
-
-// const { guardarDB,
-//         leerDB
-// } = require('./helpers/guardarArchivo');
-
 
 const main = async () => {
 
     let opt='';
     const busquedas = new Busquedas();
-
-    // if (tareasDB){
-    //     tareas.cargarTareasFromArray(tareasDB);
-    // }
 
      do {
          opt = await inquirerMenu(); //impresión del menu
@@ -33,7 +22,12 @@ const main = async () => {
                 const criterio = await leerInput('Ciudad:'); 
                 const lugares = await busquedas.Ciudad(criterio);
                 const id = await listarLugares(lugares);
+
+                if (id === '0') continue; 
                 const lugarSel= lugares.find( l => l.id === id);
+
+                busquedas.agregarHistorial(lugarSel.nombre);
+
                 const clima = await busquedas.Weather(lugarSel.lat,lugarSel.lng);
 
                 console.clear();
@@ -47,10 +41,13 @@ const main = async () => {
                 console.log('Descripcion : ', clima.desc.green);
                 break;           
             case 2:
-                busquedas.historial();
+                // busquedas.historial.forEach((lugar,i) => {
+                busquedas.historialCapitalizado.forEach((lugar,i) => {
+                    const idx = `${ i +1}.`.green;
+                    console.log(`${ idx} ${lugar}`);    
+                });
                 break;           
         }
-    //     guardarDB(tareas.listadoArr);
         if (opt !== 0) await  pausa();
     } while (opt != 0);
 
