@@ -34,15 +34,17 @@ const main = async () => {
                 const lugares = await busquedas.Ciudad(criterio);
                 const id = await listarLugares(lugares);
                 const lugarSel= lugares.find( l => l.id === id);
+                const clima = await busquedas.Weather(lugarSel.lat,lugarSel.lng);
 
-
+                console.clear();
                 console.log('\nInformación de la ciudad\n'.green);
-                console.log('Ciudad       : ', lugarSel.nombre);
-                console.log('Latitud      : ', lugarSel.lat);
-                console.log('Longitud     : ', lugarSel.lng);
-                console.log('Tenmperatura : ',);
-                console.log('Máxima       : ',);
-                console.log('Mínima       : ',);
+                console.log('Ciudad      : ', lugarSel.nombre.green);
+                console.log('Latitud     : ', lugarSel.lat);
+                console.log('Longitud    : ', lugarSel.lng);
+                console.log('Temperatura : ', clima.temp);
+                console.log('Mínima      : ', clima.min);
+                console.log('Máxima      : ', clima.max);
+                console.log('Descripcion : ', clima.desc.green);
                 break;           
             case 2:
                 busquedas.historial();
